@@ -1,9 +1,12 @@
 from PIL import Image
 import numpy as numpie
+import re
 
 class MoutainMapper:
 
     def __init__(self, filename):
+
+        # Intialize attributes
 
         self.min , self.max , self.range , self.elavation_data , self.rows , self.columns = self.extract_data(filename)
 
@@ -18,12 +21,41 @@ class MoutainMapper:
 
             lines = file.read().splitlines()
 
+        elavation_data = []
+
+        for line in lines:
+
+            new_line = line.splitlines()
+
+            new_line[0] = new_line[0].split("   ")
+
+            elavation_data.append(new_line[0])
+
         max = 0
 
-        min = -1
+        min = elavation_data[0][0]
 
-        print(lines)
-        #for line in lines:
+        for line in lines:
+
+            for elavation in line:
+
+                if int(elavation) > max:
+
+                    max = int(elavation)
+
+                elif int(elavation) < min:
+
+                    min = int(elavation)
+
+        print(max)
+        print(min)
+        
+        rows_x_col = re.findall(r"\d+x{1}\d+", filename)
+
+        rows, columns = rows_x_col[0].split("x")
+
+
+
 
     def make_image(self, elavation_data):
 
@@ -33,7 +65,7 @@ class MoutainMapper:
 
 
 #m = MoutainMapper("Colorado_480x480.dat")
-m = MoutainMapper("mini.dat")
+m = MoutainMapper("mini_14x26.dat")
 
 
 
