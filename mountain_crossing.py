@@ -31,6 +31,15 @@ class MoutainMapper:
 
             elavation_data.append(new_line[0])
 
+        min, max = self.find_min_and_max(elavation_data)
+        
+        rows_x_col = re.findall(r"\d+x{1}\d+", filename)
+
+        rows, columns = rows_x_col[0].split("x")
+
+
+    def find_min_and_max(self, elavation_data):
+
         max = 0
 
         min = elavation_data[0][0]
@@ -47,20 +56,10 @@ class MoutainMapper:
 
                     min = int(elavation)
 
-        print(max)
-        print(min)
-        
-        rows_x_col = re.findall(r"\d+x{1}\d+", filename)
-
-        rows, columns = rows_x_col[0].split("x")
-
-
-
 
     def make_image(self, elavation_data):
 
-        current_pixel = (0,0)
-
+        
 
 
 
