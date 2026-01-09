@@ -9,7 +9,7 @@ class MoutainMapper:
 
         min , max , range , elavation_data , rows , columns = self.extract_data(filename)
 
-        image_matrix = self.make_image(elavation_data, min, max, range, rows, columns)
+        image_matrix = self.make_image(elavation_data, min, range, rows, columns)
 
         #find_lowest_elavation(image_matrix, elavation_data)
 
@@ -59,7 +59,7 @@ class MoutainMapper:
 
         return min, max
 
-    def make_image(self, elavation_data, min, max, range, rows, columns):
+    def make_image(self, elavation_data, min, range, rows, columns):
         
         image_matrix = numpy.zeros(shape=(rows, columns), dtype=object)
 
@@ -67,22 +67,21 @@ class MoutainMapper:
         
         for line in elavation_data:
             
-            
             for elavation in line: 
 
                 shifted_value = int(elavation) - min
 
                 percentage = shifted_value / range
 
-                grey_value = 255 * percentage
+                grey_value = int(255 * percentage)
 
-                print(image_matrix)
-
-                image_matrix[current_pixel[0], current_pixel[1]] = (grey_value, grey_value, grey_value)
-
-                if current_pixel[0] >= rows:
+                if current_pixel[0] == columns:
 
                     current_pixel = (0, current_pixel[1])
+
+                else:
+
+                    image_matrix[current_pixel[0], current_pixel[1]] = (grey_value, grey_value, grey_value)
 
                 current_pixel = (current_pixel[0] + 1, current_pixel[1])
 
