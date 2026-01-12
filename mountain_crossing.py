@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as numpy
+import random
 
 class MoutainMapper:
 
@@ -11,7 +12,7 @@ class MoutainMapper:
 
         image_matrix = self.make_image(elavation_data, min, range, rows, columns)
 
-        #find_lowest_elavation(image_matrix, elavation_data)
+        self.draw_elavation(image_matrix, elavation_data, rows, columns)
 
 
     def extract_data(self, filename):
@@ -67,7 +68,7 @@ class MoutainMapper:
         
         for line in elavation_data:
             
-            for elavation in line: 
+            for elavation in line:
 
                 shifted_value = int(elavation) - min
 
@@ -75,19 +76,94 @@ class MoutainMapper:
 
                 grey_value = int(255 * percentage)
 
-                if current_pixel[0] == columns:
+                image_matrix[current_pixel[0]][current_pixel[1]] = (grey_value, grey_value, grey_value)
 
-                    current_pixel = (0, current_pixel[1])
+                if current_pixel[1] == columns - 1:
+
+                    current_pixel = (current_pixel[0], 0)
 
                 else:
 
-                    image_matrix[current_pixel[0], current_pixel[1]] = (grey_value, grey_value, grey_value)
+                    current_pixel = (current_pixel[0], current_pixel[1] + 1)
 
-                current_pixel = (current_pixel[0] + 1, current_pixel[1])
+            current_pixel = (current_pixel[0] + 1, current_pixel[1])
 
-            current_pixel = (current_pixel[0], current_pixel[1] + 1)
+        return image_matrix
+    
+    def draw_elavation(self, image_matrix, elavation_data, rows, columns):
 
-        print(image_matrix)
+        current_pixel = (0, 0)
+
+        starting_elavation = (0, 0)
+
+        end = False
+
+
+        while end == False:
+
+            print(current_pixel)
+
+            image_matrix[current_pixel[0]][current_pixel[1]] = (255, 0, 0)
+
+            next_location = self.next_location(current_pixel, columns, rows, elavation_data)
+
+            if next_location == None:
+
+                if current_pixel == (rows - 1, columns - 1):
+
+                    end = True
+
+                else:
+
+                    starting_elavation = (starting_elavation[0] + 1, 0)
+
+                    current_pixel = starting_elavation
+
+            else:
+
+                current_pixel = next_location
+
+        return image_matrix
+
+                    
+
+
+    def next_location(self, current_pixel, columns, rows, elavation_data):
+
+        straight_index = (current_pixel[0], current_pixel[1] + 1)
+
+        up_index = (current_pixel[0] - 1, current_pixel[1] + 1)
+        
+        down_index = (current_pixel[0] + 1, current_pixel[1] + 1)
+
+        if straight_index[1] > columns:
+
+            return None
+
+        else:
+
+            if up_index[0] < 0:
+
+                if elavation_data[straight_index[0]][straight_index[1]] <= elavation_data[down_index[0]][down_index[1]]:
+
+                    return straight_index
+                
+                else:
+
+                    return down_index
+                
+            elif down_index[0] > rows - 1:
+
+                return straight_index
+            
+            else:
+
+                return random.choice([up_index, down_index])
+
+
+
+
+
 
 
 
