@@ -14,10 +14,14 @@ class MoutainMapper:
 
         self.draw_elavation(image_matrix, elavation_data, rows, columns)
 
+        self.convert_to_jpeg(image_matrix)
+
 
     def extract_data(self, filename):
 
         with open(filename, 'r') as file:
+
+            # each line in data is now a string in a list
 
             lines = file.read().splitlines()
 
@@ -25,9 +29,11 @@ class MoutainMapper:
 
         for line in lines:
 
+            # now a list with one element in it, which was the string
+
             new_line = line.splitlines()
 
-            new_line[0] = new_line[0].split("   ")
+            new_line[0] = new_line[0].split()
 
             elavation_data.append(new_line[0])
 
@@ -62,7 +68,7 @@ class MoutainMapper:
 
     def make_image(self, elavation_data, min, range, rows, columns):
         
-        image_matrix = numpy.zeros(shape=(rows, columns), dtype=object)
+        image_matrix = numpy.zeros(shape=(rows, columns, 3), dtype=numpy.uint8)
 
         current_pixel = (0, 0)
         
@@ -76,7 +82,7 @@ class MoutainMapper:
 
                 grey_value = int(255 * percentage)
 
-                image_matrix[current_pixel[0]][current_pixel[1]] = (grey_value, grey_value, grey_value)
+                image_matrix[current_pixel[0]][current_pixel[1]] = [grey_value, grey_value, grey_value]
 
                 if current_pixel[1] == columns - 1:
 
@@ -101,9 +107,7 @@ class MoutainMapper:
 
         while end == False:
 
-            print(current_pixel)
-
-            image_matrix[current_pixel[0]][current_pixel[1]] = (255, 0, 0)
+            image_matrix[current_pixel[0]][current_pixel[1]] = [255, 0, 0]
 
             next_location = self.next_location(current_pixel, columns, rows, elavation_data)
 
@@ -125,8 +129,6 @@ class MoutainMapper:
 
         return image_matrix
 
-                    
-
 
     def next_location(self, current_pixel, columns, rows, elavation_data):
 
@@ -136,7 +138,7 @@ class MoutainMapper:
         
         down_index = (current_pixel[0] + 1, current_pixel[1] + 1)
 
-        if straight_index[1] > columns:
+        if straight_index[1] >= columns:
 
             return None
 
@@ -160,7 +162,11 @@ class MoutainMapper:
 
                 return random.choice([up_index, down_index])
 
+    def convert_to_jpeg(self, image_matrix):
 
+        jpeg = Image.fromarray(image_matrix, "RGB")
+
+        jpeg.save("output/output.jpg")
 
 
 
@@ -171,8 +177,8 @@ class MoutainMapper:
 
 
 
-#m = MoutainMapper("Colorado_480x480.dat")
-m = MoutainMapper("mini.dat")
+m = MoutainMapper("Colorado_480x480.dat")
+#m = MoutainMapper("mini.dat")
 
 
 
