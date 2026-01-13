@@ -94,6 +94,10 @@ class MoutainMapper:
 
             current_pixel = (current_pixel[0] + 1, current_pixel[1])
 
+        jpeg = Image.fromarray(image_matrix, "RGB")
+
+        jpeg.save("output/output1.jpg")
+
         return image_matrix
     
     def draw_elavation(self, image_matrix, elavation_data, rows, columns):
@@ -113,8 +117,8 @@ class MoutainMapper:
 
             if next_location == None:
 
-                if current_pixel == (rows - 1, columns - 1):
-
+                if starting_elavation[0] >= rows-1:
+                   
                     end = True
 
                 else:
@@ -166,8 +170,14 @@ class MoutainMapper:
 
         jpeg = Image.fromarray(image_matrix, "RGB")
 
-        jpeg.save("output/output.jpg")
+        jpeg.save("output/output.png")
 
+
+# turn while loop into for loop
+
+# change next_location algorithm 
+
+# add comments and docstrings
 
 
 
